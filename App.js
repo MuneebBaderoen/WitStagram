@@ -36,7 +36,11 @@ export default class App extends React.Component {
       <PaperProvider theme={theme}>
         <StatusBar style={styles.statusBar} barStyle="light-content" />
         <Appbar.Header dark={true}>
-          <Appbar.Content dark={true} title="Title" subtitle="Subtitle" />
+          <Appbar.Content
+            dark={true}
+            title="Witstagram"
+            subtitle="A react native tech demo"
+          />
         </Appbar.Header>
         <BottomNavigation
           activeColor="#fff"

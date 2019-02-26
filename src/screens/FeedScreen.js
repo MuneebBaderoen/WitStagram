@@ -20,8 +20,10 @@ import { Contacts } from "expo";
 
 export default class FeedScreen extends React.Component {
   state = {
+    numItems: 25,
     photos: [],
-    contacts: []
+    contacts: [],
+    jokes: []
   };
 
   formatName = name => {
@@ -29,6 +31,18 @@ export default class FeedScreen extends React.Component {
       .split(" ")
       .join("")
       .toLowerCase();
+  };
+
+  fetchJokes = async () => {
+    const jokes = await fetch(`https://cat-fact.herokuapp.com/facts`)
+      .then(response => response.json())
+      .then(response =>
+        response.all.slice(0, this.state.numItems).map(item => item.text)
+      );
+
+    this.setState({
+      jokes
+    });
   };
 
   getContacts = async () => {
@@ -45,22 +59,46 @@ export default class FeedScreen extends React.Component {
     });
   };
 
-  getRandomContact = () => {
-    const numContacts = this.state.contacts.length;
-    const randomIndex = Math.floor(Math.random() * numContacts);
-    return this.state.contacts[randomIndex];
+  getRandomListItem = (list, index) => {
+    const numItems = list.length;
+    const clampedIndex = Math.floor(index % numItems);
+    return list[clampedIndex];
   };
 
   getPhotos = async () => {
-    const response = await CameraRoll.getPhotos({ first: 25 });
+    const response = await CameraRoll.getPhotos({ first: this.state.numItems });
     this.setState({
       photos: response.edges
     });
   };
 
+  toggleLike = index => {
+    console.log("Photo toggled!", index);
+    this.setState({
+      photos: this.state.photos.map((item, i) => {
+        if (i === index) {
+          item.active = !item.active;
+        }
+        return item;
+      })
+    });
+  };
+
   componentDidMount = async () => {
-    this.getContacts();
-    this.getPhotos();
+    await this.fetchJokes();
+    await this.getContacts();
+    await this.getPhotos();
+  };
+
+  handleDoubleTap = index => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    console.log(now);
+    if (this.lastTap && now - this.lastTap < DOUBLE_PRESS_DELAY) {
+      this.toggleLike(index);
+    } else {
+      this.lastTap = now;
+    }
   };
 
   render() {
@@ -68,9 +106,15 @@ export default class FeedScreen extends React.Component {
       <View>
         <ScrollView>
           {this.state.photos.map((p, i) => {
-            const contact = this.getRandomContact();
+            const joke = this.getRandomListItem(this.state.jokes, i);
+            const contact = this.getRandomListItem(this.state.contacts, i);
             return (
-              <Card style={styles.card} elevation={8} key={i}>
+              <Card
+                key={i}
+                style={styles.card}
+                elevation={8}
+                onPress={this.handleDoubleTap.bind(this, i)}
+              >
                 <Card.Content style={styles.cardTitle}>
                   <Avatar.Image
                     style={styles.cardAvatar}
@@ -79,21 +123,19 @@ export default class FeedScreen extends React.Component {
                   />
                   <Title>{contact.name}</Title>
                 </Card.Content>
+
                 <Card.Cover source={{ uri: p.node.image.uri }} />
                 <Card.Actions>
                   <IconButton
-                    icon="favorite-border"
+                    icon={p.active ? "favorite" : "favorite-border"}
                     color={"#46acb2"}
                     size={20}
-                    onPress={() => console.log("Pressed")}
-                  />
-                  <IconButton
-                    icon="favorite"
-                    color={"#46acb2"}
-                    size={20}
-                    onPress={() => console.log("Pressed")}
+                    onPress={this.toggleLike.bind(this, i)}
                   />
                 </Card.Actions>
+                <Card.Content style={styles.cardTitle}>
+                  <Paragraph>{joke}</Paragraph>
+                </Card.Content>
               </Card>
             );
           })}
