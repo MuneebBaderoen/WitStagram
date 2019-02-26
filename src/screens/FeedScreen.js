@@ -16,6 +16,7 @@ import {
   IconButton,
   Colors
 } from "react-native-paper";
+
 import { Contacts } from "expo";
 
 export default class FeedScreen extends React.Component {

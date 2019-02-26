@@ -3,6 +3,7 @@ import { StyleSheet, View, StatusBar } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Appbar, BottomNavigation, Text } from "react-native-paper";
 import FeedScreen from "./src/screens/FeedScreen";
+import CameraScreen from "./src/screens/CameraScreen";
 
 const theme = {
   ...DefaultTheme,
@@ -27,8 +28,8 @@ export default class App extends React.Component {
   _handleIndexChange = index => this.setState({ index });
 
   _renderScene = BottomNavigation.SceneMap({
-    music: FeedScreen,
-    albums: MusicRoute
+    music: CameraScreen,
+    albums: FeedScreen
   });
 
   render() {
