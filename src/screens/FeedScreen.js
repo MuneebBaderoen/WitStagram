@@ -6,7 +6,8 @@ import {
   ScrollView,
   Image,
   StyleSheet,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from "react-native";
 import {
   Avatar,
@@ -22,7 +23,8 @@ import { Contacts } from "expo";
 
 export default class FeedScreen extends React.Component {
   state = {
-    listRefreshing: false,
+    isListRefreshingTop: false,
+    isListRefreshingBottom: false,
     numItems: 25,
     photos: [],
     contacts: [],
@@ -72,7 +74,23 @@ export default class FeedScreen extends React.Component {
     const response = await CameraRoll.getPhotos({ first: this.state.numItems });
     this.setState({
       photos: response.edges,
-      listRefreshing: false
+      isListRefreshingTop: false,
+      photosEndCursor: response.page_info.end_cursor
+    });
+  };
+
+  getMorePhotos = async () => {
+    this.setState({
+      isListRefreshingBottom: true
+    });
+    const response = await CameraRoll.getPhotos({
+      first: this.state.numItems,
+      after: this.state.photosEndCursor
+    });
+    this.setState({
+      isListRefreshingBottom: false,
+      photos: this.state.photos.concat(response.edges),
+      photosEndCursor: response.page_info.end_cursor
     });
   };
 
@@ -105,18 +123,25 @@ export default class FeedScreen extends React.Component {
 
   onRefresh = async () => {
     this.setState({
-      listRefreshing: true
+      isListRefreshingTop: true
     });
     this.getPhotos();
+  };
+
+  onBottomRefresh = async () => {
+    await this.getMorePhotos();
   };
 
   render() {
     return (
       <View>
         <FlatList
-          refreshing={this.state.listRefreshing}
+          refreshing={this.state.isListRefreshingTop}
           data={this.state.photos}
           onRefresh={this.onRefresh}
+          keyExtractor={(item, index) => item.node.image.uri + index}
+          onEndReached={this.onBottomRefresh}
+          onEndReachedThreshold={0.5}
           renderItem={listItem => {
             const p = listItem.item;
             const i = listItem.index;
@@ -153,6 +178,13 @@ export default class FeedScreen extends React.Component {
               </Card>
             );
           }}
+          ListFooterComponent={
+            this.state.isListRefreshingBottom && (
+              <View style={{ flex: 1, padding: 10 }}>
+                <ActivityIndicator size="large" />
+              </View>
+            )
+          }
         />
       </View>
     );
