@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  CameraRoll
-} from "react-native";
+import { View, StyleSheet, CameraRoll } from "react-native";
 import { IconButton } from "react-native-paper";
 
 import { Camera, Permissions } from "expo";
@@ -37,9 +31,9 @@ export default class CameraScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.flexContainer}>
         <Camera
-          style={{ flex: 1 }}
+          style={styles.flexContainer}
           type={this.state.type}
           ref={ref => {
             this.camera = ref;
@@ -68,18 +62,15 @@ export default class CameraScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  flexContainer: {
+    flex: 1
+  },
   cameraView: {
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "center"
   },
-  // flipButton: {
-  //   flex: 0.1,
-  //   alignSelf: "flex-end",
-  //   alignItems: "center",
-  //   padding: 10
-  // },
   photoButton: {
     alignSelf: "flex-end",
     height: 100,
@@ -89,18 +80,5 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     height: 100,
     width: 100
-  },
-  flipText: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: "white"
-  },
-  cardTitle: {
-    flex: 1,
-    flexDirection: "row"
-  },
-  cardAvatar: {
-    marginRight: 10,
-    marginBottom: 10
   }
 });

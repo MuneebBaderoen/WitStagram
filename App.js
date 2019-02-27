@@ -5,37 +5,35 @@ import { Appbar, BottomNavigation, Text } from "react-native-paper";
 import FeedScreen from "./src/screens/FeedScreen";
 import CameraScreen from "./src/screens/CameraScreen";
 
-const theme = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: "#46acb2",
-    accent: "#f1c40f"
-  }
-};
-const MusicRoute = () => <Text>Music</Text>;
-
 export default class App extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: "music", title: "Camera", icon: "queue-music" },
-      { key: "albums", title: "Feed", icon: "album" }
-    ]
+      { key: "feed", title: "Feed", icon: "rss-feed" },
+      { key: "camera", title: "Camera", icon: "camera-alt" }
+    ],
+    theme: {
+      ...DefaultTheme,
+      roundness: 2,
+      colors: {
+        ...DefaultTheme.colors,
+        primary: "#46acb2",
+        accent: "#f1c40f"
+      }
+    }
   };
 
   _handleIndexChange = index => this.setState({ index });
 
   _renderScene = BottomNavigation.SceneMap({
-    music: CameraScreen,
-    albums: FeedScreen
+    feed: FeedScreen,
+    camera: CameraScreen
   });
 
   render() {
     return (
-      <PaperProvider theme={theme}>
-        <StatusBar style={styles.statusBar} barStyle="light-content" />
+      <PaperProvider theme={this.state.theme}>
+        <StatusBar barStyle="light-content" />
         <Appbar.Header dark={true}>
           <Appbar.Content
             dark={true}
@@ -54,18 +52,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  statusBar: {
-    paddingTop: 200
-  },
-  bottom: {
-    // backgroundColor: "red"
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});

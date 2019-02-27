@@ -5,7 +5,8 @@ import {
   CameraRoll,
   ScrollView,
   Image,
-  StyleSheet
+  StyleSheet,
+  FlatList
 } from "react-native";
 import {
   Avatar,
@@ -21,6 +22,7 @@ import { Contacts } from "expo";
 
 export default class FeedScreen extends React.Component {
   state = {
+    listRefreshing: false,
     numItems: 25,
     photos: [],
     contacts: [],
@@ -69,7 +71,8 @@ export default class FeedScreen extends React.Component {
   getPhotos = async () => {
     const response = await CameraRoll.getPhotos({ first: this.state.numItems });
     this.setState({
-      photos: response.edges
+      photos: response.edges,
+      listRefreshing: false
     });
   };
 
@@ -86,9 +89,7 @@ export default class FeedScreen extends React.Component {
   };
 
   componentDidMount = async () => {
-    await this.fetchJokes();
-    await this.getContacts();
-    await this.getPhotos();
+    Promise.all([this.fetchJokes(), this.getContacts(), this.getPhotos()]);
   };
 
   handleDoubleTap = index => {
@@ -102,11 +103,23 @@ export default class FeedScreen extends React.Component {
     }
   };
 
+  onRefresh = async () => {
+    this.setState({
+      listRefreshing: true
+    });
+    this.getPhotos();
+  };
+
   render() {
     return (
       <View>
-        <ScrollView>
-          {this.state.photos.map((p, i) => {
+        <FlatList
+          refreshing={this.state.listRefreshing}
+          data={this.state.photos}
+          onRefresh={this.onRefresh}
+          renderItem={listItem => {
+            const p = listItem.item;
+            const i = listItem.index;
             const joke = this.getRandomListItem(this.state.jokes, i);
             const contact = this.getRandomListItem(this.state.contacts, i);
             return (
@@ -139,8 +152,8 @@ export default class FeedScreen extends React.Component {
                 </Card.Content>
               </Card>
             );
-          })}
-        </ScrollView>
+          }}
+        />
       </View>
     );
   }
