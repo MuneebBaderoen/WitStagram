@@ -1,11 +1,12 @@
 import React from "react";
-import { View, StyleSheet, CameraRoll } from "react-native";
+import { View, StyleSheet, CameraRoll, ActivityIndicator } from "react-native";
 import { IconButton } from "react-native-paper";
 
 import { Camera, Permissions } from "expo";
 
 export default class CameraScreen extends React.Component {
   state = {
+    isSavingPhoto: false,
     hasCameraPermission: null,
     type: Camera.Constants.Type.back
   };
@@ -25,8 +26,16 @@ export default class CameraScreen extends React.Component {
   };
 
   handleTakePhoto = async () => {
+    console.log("Saving photo");
+    this.setState({
+      isSavingPhoto: true
+    });
     const tempPhoto = await this.camera.takePictureAsync();
     const finalUri = await CameraRoll.saveToCameraRoll(tempPhoto.uri);
+    this.setState({
+      isSavingPhoto: false
+    });
+    console.log("Saving photo complete");
   };
 
   render() {
@@ -40,6 +49,10 @@ export default class CameraScreen extends React.Component {
           }}
         >
           <View style={styles.cameraView}>
+            <View style={styles.activity}>
+              {this.state.isSavingPhoto && <ActivityIndicator size="large" />}
+            </View>
+
             <IconButton
               style={styles.flipButton}
               icon="flip"
@@ -62,6 +75,12 @@ export default class CameraScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  activity: {
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    padding: "50%"
+  },
   flexContainer: {
     flex: 1
   },
