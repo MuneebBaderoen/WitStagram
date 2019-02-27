@@ -57,7 +57,7 @@ export default class FeedScreen extends React.Component {
       .map(item => ({
         name: this.formatName(item.name),
         uri: item.image.uri,
-        rawImage: item.rawImage
+        rawImage: item.image.uri
       }));
     this.setState({
       contacts
@@ -107,7 +107,9 @@ export default class FeedScreen extends React.Component {
   };
 
   componentDidMount = async () => {
-    Promise.all([this.fetchJokes(), this.getContacts(), this.getPhotos()]);
+    await this.fetchJokes();
+    await this.getContacts();
+    await this.getPhotos();
   };
 
   handleDoubleTap = index => {
@@ -158,7 +160,7 @@ export default class FeedScreen extends React.Component {
                   <Avatar.Image
                     style={styles.cardAvatar}
                     size={40}
-                    source={contact.rawImage}
+                    source={{ uri: contact.rawImage }}
                   />
                   <Title>{contact.name}</Title>
                 </Card.Content>

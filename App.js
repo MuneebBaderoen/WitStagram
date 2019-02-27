@@ -7,7 +7,7 @@ import CameraScreen from "./src/screens/CameraScreen";
 
 export default class App extends React.Component {
   state = {
-    index: 1,
+    index: 0,
     routes: [
       { key: "feed", title: "Feed", icon: "rss-feed" },
       { key: "camera", title: "Camera", icon: "camera-alt" }

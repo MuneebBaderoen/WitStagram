@@ -12,8 +12,16 @@ export default class CameraScreen extends React.Component {
   };
 
   async componentDidMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === "granted" });
+    const { cameraStatus } = await Permissions.askAsync(Permissions.CONTACTS);
+    const { contactsStatus } = await Permissions.askAsync(Permissions.CAMERA);
+    const { cameraRollStatus } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+    this.setState({
+      hasCameraPermission: cameraStatus === "granted",
+      hasContactsPermission: contactsStatus === "granted",
+      hasCameraRollPermission: cameraRollStatus === "granted"
+    });
   }
 
   handleFlip = () => {
