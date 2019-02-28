@@ -18,17 +18,16 @@ import {
   IconButton,
   Colors
 } from "react-native-paper";
-
-import { Contacts } from "expo";
+import { Contacts, Permissions } from "expo";
 
 export default class FeedScreen extends React.Component {
   state = {
     isListRefreshingTop: false,
-    isListRefreshingBottom: false,
+    isListRefreshingBottom: true,
     numItems: 25,
     photos: [],
     contacts: [],
-    jokes: []
+    facts: []
   };
 
   formatName = name => {
@@ -38,30 +37,31 @@ export default class FeedScreen extends React.Component {
       .toLowerCase();
   };
 
-  fetchJokes = async () => {
-    const jokes = await fetch(`https://cat-fact.herokuapp.com/facts`)
+  fetchCatFacts = async () => {
+    const facts = await fetch(`https://cat-fact.herokuapp.com/facts`)
       .then(response => response.json())
       .then(response =>
-        response.all.slice(0, this.state.numItems).map(item => item.text)
+        response.all.slice(50, 50 + this.state.numItems).map(item => item.text)
       );
 
     this.setState({
-      jokes
+      facts
     });
   };
 
   getContacts = async () => {
-    const response = await Contacts.getContactsAsync();
-    const contacts = response.data
-      .filter(item => item.imageAvailable)
-      .map(item => ({
-        name: this.formatName(item.name),
-        uri: item.image.uri,
-        rawImage: item.image.uri
-      }));
-    this.setState({
-      contacts
-    });
+    if (this.state.hasContactsPermission) {
+      const response = await Contacts.getContactsAsync();
+      const contacts = response.data
+        .filter(item => item.imageAvailable)
+        .map(item => ({
+          name: this.formatName(item.name),
+          uri: item.image.uri
+        }));
+      this.setState({
+        contacts
+      });
+    }
   };
 
   getRandomListItem = (list, index) => {
@@ -71,31 +71,36 @@ export default class FeedScreen extends React.Component {
   };
 
   getPhotos = async () => {
-    const response = await CameraRoll.getPhotos({ first: this.state.numItems });
-    this.setState({
-      photos: response.edges,
-      isListRefreshingTop: false,
-      photosEndCursor: response.page_info.end_cursor
-    });
+    if (this.state.hasCameraRollPermission) {
+      const response = await CameraRoll.getPhotos({
+        first: this.state.numItems
+      });
+      this.setState({
+        photos: response.edges,
+        isListRefreshingTop: false,
+        photosEndCursor: response.page_info.end_cursor
+      });
+    }
   };
 
   getMorePhotos = async () => {
-    this.setState({
-      isListRefreshingBottom: true
-    });
-    const response = await CameraRoll.getPhotos({
-      first: this.state.numItems,
-      after: this.state.photosEndCursor
-    });
-    this.setState({
-      isListRefreshingBottom: false,
-      photos: this.state.photos.concat(response.edges),
-      photosEndCursor: response.page_info.end_cursor
-    });
+    if (this.state.hasCameraRollPermission) {
+      this.setState({
+        isListRefreshingBottom: true
+      });
+      const response = await CameraRoll.getPhotos({
+        first: this.state.numItems,
+        after: this.state.photosEndCursor
+      });
+      this.setState({
+        isListRefreshingBottom: false,
+        photos: this.state.photos.concat(response.edges),
+        photosEndCursor: response.page_info.end_cursor
+      });
+    }
   };
 
   toggleLike = index => {
-    console.log("Photo toggled!", index);
     this.setState({
       photos: this.state.photos.map((item, i) => {
         if (i === index) {
@@ -107,15 +112,27 @@ export default class FeedScreen extends React.Component {
   };
 
   componentDidMount = async () => {
-    await this.fetchJokes();
+    const { status: contactsStatus } = await Permissions.askAsync(
+      Permissions.CAMERA
+    );
+    const { status: cameraRollStatus } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+    this.setState({
+      hasContactsPermission: contactsStatus === "granted",
+      hasCameraRollPermission: cameraRollStatus === "granted"
+    });
+    await this.fetchCatFacts();
     await this.getContacts();
     await this.getPhotos();
+    this.setState({
+      isListRefreshingBottom: false
+    });
   };
 
   handleDoubleTap = index => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
-    console.log(now);
     if (this.lastTap && now - this.lastTap < DOUBLE_PRESS_DELAY) {
       this.toggleLike(index);
     } else {
@@ -147,7 +164,7 @@ export default class FeedScreen extends React.Component {
           renderItem={listItem => {
             const p = listItem.item;
             const i = listItem.index;
-            const joke = this.getRandomListItem(this.state.jokes, i);
+            const catFact = this.getRandomListItem(this.state.facts, i);
             const contact = this.getRandomListItem(this.state.contacts, i);
             return (
               <Card
@@ -160,7 +177,7 @@ export default class FeedScreen extends React.Component {
                   <Avatar.Image
                     style={styles.cardAvatar}
                     size={40}
-                    source={{ uri: contact.rawImage }}
+                    source={{ uri: contact.uri }}
                   />
                   <Title>{contact.name}</Title>
                 </Card.Content>
@@ -175,7 +192,7 @@ export default class FeedScreen extends React.Component {
                   />
                 </Card.Actions>
                 <Card.Content style={styles.cardTitle}>
-                  <Paragraph>{joke}</Paragraph>
+                  <Paragraph>{catFact}</Paragraph>
                 </Card.Content>
               </Card>
             );
