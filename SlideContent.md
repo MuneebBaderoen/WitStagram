@@ -23,8 +23,8 @@
 
 - Choose your state management
 
-  - You've got choices here. Redux, Mobx, Context API, Component State
-  - Everything that works for React works here
+  - You've got choices here. Redux, Mobx, Context API, Component State, etc.
+  - Everything that works for React works here\*
 
 - Define any API's you need as soon as possible
 
@@ -34,14 +34,14 @@
 
 - Generate blank project
 - Install our component library: react-native-paper
+- Checkpoint 0 --------------------
 - Add basic navigation toolbar: two buttons that each display different text
-- Setup our colour theme
 - Get permissions for device API's we want to use: contacts, camera, camera roll
 
 ### Build feed (Code along)
 
 - Checkpoint 1 --------------------
-- (Given) Get permissions from the device
+- Setup our colour theme and statusbar
 - (Given) Get data from device into component state: contacts, camera roll (console log is good enough)
 - (Given) Get data from remote API: cat facts
 - Iterate over the list of photos
