@@ -7,7 +7,8 @@ import {
   Image,
   StyleSheet,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
 import {
   Avatar,
@@ -75,8 +76,8 @@ export const SimpleListComponent = props => {
         return (
           <FeedListItem
             key={photo.uri}
-            catFact={catFact}
             contact={contact}
+            catFact={catFact}
             photo={photo}
           />
         );
@@ -139,7 +140,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
   cardTitle: {
-    flex: 1,
     flexDirection: "row"
   },
   cardAvatar: {
