@@ -1,24 +1,12 @@
 import React from "react";
 import {
   View,
-  Text,
-  CameraRoll,
   ScrollView,
-  Image,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
-  Dimensions
+  ActivityIndicator
 } from "react-native";
-import {
-  Avatar,
-  Button,
-  Card,
-  Title,
-  Paragraph,
-  IconButton,
-  Colors
-} from "react-native-paper";
+import { Avatar, Card, Title, Paragraph, IconButton } from "react-native-paper";
 import { getClampedListItem } from "../services/DataService";
 
 export const FeedListItem = props => {

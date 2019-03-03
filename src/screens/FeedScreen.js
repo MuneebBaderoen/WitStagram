@@ -85,8 +85,13 @@ export default class FeedScreen extends React.Component {
     }
   };
 
-  // renderSimpleList() {
   render() {
+    // return this.renderSimpleList();
+    // return this.renderScrollingList();
+    return this.renderFlatList();
+  }
+
+  renderSimpleList() {
     return (
       <SimpleListComponent
         photos={this.state.photos}
@@ -97,7 +102,6 @@ export default class FeedScreen extends React.Component {
   }
 
   renderScrollingList() {
-    // render() {
     return (
       <ScrollingListComponent
         photos={this.state.photos}
@@ -108,7 +112,6 @@ export default class FeedScreen extends React.Component {
   }
 
   renderFlatList = () => {
-    // render () {
     return (
       <FlatListComponent
         photos={this.state.photos}
