@@ -18,7 +18,8 @@ import {
   IconButton,
   Colors
 } from "react-native-paper";
-import { Contacts, Permissions } from "expo";
+
+import { DataService } from "../services/DataService";
 
 export default class FeedScreen extends React.Component {
   state = {
@@ -30,74 +31,17 @@ export default class FeedScreen extends React.Component {
     facts: []
   };
 
-  formatName = name => {
-    return name
-      .split(" ")
-      .join("")
-      .toLowerCase();
-  };
-
-  fetchCatFacts = async () => {
-    const facts = await fetch(`https://cat-fact.herokuapp.com/facts`)
-      .then(response => response.json())
-      .then(response =>
-        response.all.slice(50, 50 + this.state.numItems).map(item => item.text)
-      );
-
+  componentDidMount = async () => {
+    const catFacts = await DataService.fetchCatFacts(25);
+    const contacts = await DataService.getContacts(25);
+    const { photos, photosEndCursor } = await DataService.getPhotos(25);
     this.setState({
-      facts
+      isListRefreshingBottom: false,
+      catFacts,
+      contacts,
+      photos,
+      photosEndCursor
     });
-  };
-
-  getContacts = async () => {
-    if (this.state.hasContactsPermission) {
-      const response = await Contacts.getContactsAsync();
-      const contacts = response.data
-        .filter(item => item.imageAvailable)
-        .map(item => ({
-          name: this.formatName(item.name),
-          uri: item.image.uri
-        }));
-      this.setState({
-        contacts
-      });
-    }
-  };
-
-  getRandomListItem = (list, index) => {
-    const numItems = list.length;
-    const clampedIndex = Math.floor(index % numItems);
-    return list[clampedIndex];
-  };
-
-  getPhotos = async () => {
-    if (this.state.hasCameraRollPermission) {
-      const response = await CameraRoll.getPhotos({
-        first: this.state.numItems
-      });
-      this.setState({
-        photos: response.edges,
-        isListRefreshingTop: false,
-        photosEndCursor: response.page_info.end_cursor
-      });
-    }
-  };
-
-  getMorePhotos = async () => {
-    if (this.state.hasCameraRollPermission) {
-      this.setState({
-        isListRefreshingBottom: true
-      });
-      const response = await CameraRoll.getPhotos({
-        first: this.state.numItems,
-        after: this.state.photosEndCursor
-      });
-      this.setState({
-        isListRefreshingBottom: false,
-        photos: this.state.photos.concat(response.edges),
-        photosEndCursor: response.page_info.end_cursor
-      });
-    }
   };
 
   toggleLike = index => {
@@ -108,25 +52,6 @@ export default class FeedScreen extends React.Component {
         }
         return item;
       })
-    });
-  };
-
-  componentDidMount = async () => {
-    const { status: contactsStatus } = await Permissions.askAsync(
-      Permissions.CAMERA
-    );
-    const { status: cameraRollStatus } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-    this.setState({
-      hasContactsPermission: contactsStatus === "granted",
-      hasCameraRollPermission: cameraRollStatus === "granted"
-    });
-    await this.fetchCatFacts();
-    await this.getContacts();
-    await this.getPhotos();
-    this.setState({
-      isListRefreshingBottom: false
     });
   };
 
@@ -152,61 +77,7 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    return (
-      <View>
-        <FlatList
-          refreshing={this.state.isListRefreshingTop}
-          data={this.state.photos}
-          onRefresh={this.onRefresh}
-          keyExtractor={(item, index) => item.node.image.uri + index}
-          onEndReached={this.onBottomRefresh}
-          onEndReachedThreshold={0.5}
-          renderItem={listItem => {
-            const p = listItem.item;
-            const i = listItem.index;
-            const catFact = this.getRandomListItem(this.state.facts, i);
-            const contact = this.getRandomListItem(this.state.contacts, i);
-            return (
-              <Card
-                key={i}
-                style={styles.card}
-                elevation={8}
-                onPress={this.handleDoubleTap.bind(this, i)}
-              >
-                <Card.Content style={styles.cardTitle}>
-                  <Avatar.Image
-                    style={styles.cardAvatar}
-                    size={40}
-                    source={{ uri: contact.uri }}
-                  />
-                  <Title>{contact.name}</Title>
-                </Card.Content>
-
-                <Card.Cover source={{ uri: p.node.image.uri }} />
-                <Card.Actions>
-                  <IconButton
-                    icon={p.active ? "favorite" : "favorite-border"}
-                    color={"#46acb2"}
-                    size={20}
-                    onPress={this.toggleLike.bind(this, i)}
-                  />
-                </Card.Actions>
-                <Card.Content style={styles.cardTitle}>
-                  <Paragraph>{catFact}</Paragraph>
-                </Card.Content>
-              </Card>
-            );
-          }}
-          ListFooterComponent={
-            this.state.isListRefreshingBottom && (
-              <View style={{ flex: 1, padding: 10 }}>
-                <ActivityIndicator size="large" />
-              </View>
-            )
-          }
-        />
-      </View>
-    );
+    return <View />;
   }
 }
 
