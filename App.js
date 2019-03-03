@@ -66,12 +66,15 @@ export default class App extends React.Component {
   }
   // ----------------------APP HEADER COMPONENTS -------------------------
 
-  render() {
+  renderHelloWorld() {
     return (
       <View style={styles.container}>
         <Text>Lets build an app!</Text>
       </View>
     );
+  }
+
+  renderPaperComponents() {
     return (
       <PaperProvider theme={theme}>
         <StatusBar barStyle="light-content" />
@@ -80,12 +83,16 @@ export default class App extends React.Component {
       </PaperProvider>
     );
   }
+
+  render() {
+    return this.renderHelloWorld();
+    // return this.renderPaperComponents();
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
   }
