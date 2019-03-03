@@ -3,7 +3,7 @@ import {
   SimpleListComponent,
   ScrollingListComponent,
   FlatListComponent
-} from "../components/FeedComponents";
+} from "./components/FeedList";
 import { DataService } from "../services/DataService";
 
 export default class FeedScreen extends React.Component {

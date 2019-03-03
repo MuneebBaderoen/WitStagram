@@ -6,53 +6,8 @@ import {
   FlatList,
   ActivityIndicator
 } from "react-native";
-import { Avatar, Card, Title, Paragraph, IconButton } from "react-native-paper";
-import { getClampedListItem } from "../services/DataService";
-
-export const FeedListItem = props => {
-  return (
-    <Card style={styles.card} elevation={8} onPress={props.onCardPress}>
-      <Card.Content style={styles.cardTitle}>
-        <Avatar.Image
-          style={styles.cardAvatar}
-          size={40}
-          source={{ uri: props.contact.uri }}
-        />
-        <Title>{props.contact.name}</Title>
-      </Card.Content>
-      <Card.Cover source={{ uri: props.photo.uri }} />
-      <Card.Actions>
-        <IconButton
-          icon={props.photo.liked ? "favorite" : "favorite-border"}
-          color={"#46acb2"}
-          size={20}
-          onPress={props.onLike}
-        />
-      </Card.Actions>
-      <Card.Content style={styles.cardTitle}>
-        <Paragraph>{props.catFact}</Paragraph>
-      </Card.Content>
-    </Card>
-  );
-};
-
-FeedListItem.defaultProps = {
-  catFact: "Default cat fact",
-  contact: {
-    name: "Default contact name",
-    uri: "asdasd"
-  },
-  photo: {
-    liked: false,
-    uri: "asdasd"
-  },
-  onCardPress: () => {
-    console.log("Card pressed");
-  },
-  onLike: () => {
-    console.log("Like button pressed");
-  }
-};
+import { getClampedListItem } from "../../services/DataService";
+import { FeedListItem } from "./FeedListItem";
 
 export const SimpleListComponent = props => {
   return (
@@ -122,16 +77,3 @@ export const FlatListComponent = props => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    margin: 10
-  },
-  cardTitle: {
-    flexDirection: "row"
-  },
-  cardAvatar: {
-    marginRight: 10,
-    marginBottom: 10
-  }
-});
