@@ -68,6 +68,7 @@ export class RootComponent extends React.Component {
   renderHelloWorld() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <Text>Lets build an app!</Text>
       </View>
     );
