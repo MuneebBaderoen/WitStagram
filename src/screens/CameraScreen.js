@@ -84,9 +84,6 @@ export default class CameraScreen extends React.Component {
                 opacity: feedbackOpacity
               }}
             />
-            <View style={styles.activity}>
-              {this.state.isSavingPhoto && <ActivityIndicator size="large" />}
-            </View>
             <IconButton
               style={styles.flipButton}
               icon="flip"

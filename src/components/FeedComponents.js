@@ -1,68 +1,126 @@
-import {getRandomListItem} from '../services/DataService.js/index.js'
+import React from "react";
+import {
+  View,
+  Text,
+  CameraRoll,
+  ScrollView,
+  Image,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator
+} from "react-native";
+import {
+  Avatar,
+  Button,
+  Card,
+  Title,
+  Paragraph,
+  IconButton,
+  Colors
+} from "react-native-paper";
+import { getClampedListItem } from "../services/DataService";
 
-const FeedListItem = props => {
+export const FeedListItem = props => {
   return (
-    <Card
-      style={styles.card}
-      elevation={8}
-      onPress={props.onCardPress}
-    >
+    <Card style={styles.card} elevation={8} onPress={props.onCardPress}>
       <Card.Content style={styles.cardTitle}>
         <Avatar.Image
           style={styles.cardAvatar}
           size={40}
-          source={{ uri: contact.uri }}
+          source={{ uri: props.contact.uri }}
         />
         <Title>{props.contact.name}</Title>
       </Card.Content>
-
-      <Card.Cover source={{ uri: props.photoUri }} />
+      <Card.Cover source={{ uri: props.photo.uri }} />
       <Card.Actions>
         <IconButton
-          icon={props.active ? "favorite" : "favorite-border"}
+          icon={props.photo.liked ? "favorite" : "favorite-border"}
           color={"#46acb2"}
           size={20}
-          onPress={props.toggleLike.bind(this, i)}
+          onPress={props.onLike}
         />
       </Card.Actions>
       <Card.Content style={styles.cardTitle}>
-        <Paragraph>{catFact}</Paragraph>
+        <Paragraph>{props.catFact}</Paragraph>
       </Card.Content>
     </Card>
   );
 };
 
-const SimpleListComponent = props => {
-  return (
-
-  )
+FeedListItem.defaultProps = {
+  catFact: "Default cat fact",
+  contact: {
+    name: "Default contact name",
+    uri: "asdasd"
+  },
+  photo: {
+    liked: false,
+    uri: "asdasd"
+  },
+  onCardPress: () => {
+    console.log("Card pressed");
+  },
+  onLike: () => {
+    console.log("Like button pressed");
+  }
 };
 
-const ScrollingListComponent = props => {
+export const SimpleListComponent = props => {
+  return (
+    <View>
+      {props.photos.map((item, index) => {
+        const photo = getClampedListItem(props.photos, index);
+        const catFact = getClampedListItem(props.catFacts, index);
+        const contact = getClampedListItem(props.contacts, index);
+        return (
+          <FeedListItem
+            key={photo.uri}
+            catFact={catFact}
+            contact={contact}
+            photo={photo}
+          />
+        );
+      })}
+    </View>
+  );
+};
 
-}
+export const ScrollingListComponent = props => {
+  return (
+    <ScrollView>
+      {props.photos.map((item, index) => {
+        const photo = getClampedListItem(props.photos, index);
+        const catFact = getClampedListItem(props.catFacts, index);
+        const contact = getClampedListItem(props.contacts, index);
+        return (
+          <FeedListItem
+            key={photo.uri}
+            catFact={catFact}
+            contact={contact}
+            photo={photo}
+          />
+        );
+      })}
+    </ScrollView>
+  );
+};
 
-const FlatListComponent = props => {
+export const FlatListComponent = props => {
   return (
     <FlatList
       refreshing={props.isListRefreshingTop}
       data={props.photos}
       onRefresh={props.onRefreshTop}
-      keyExtractor={(item, index) => item.node.image.uri + index}
+      keyExtractor={(item, index) => item.uri + index}
       onEndReached={props.onRefreshBottom}
       onEndReachedThreshold={0.5}
       renderItem={listItem => {
-        const p = listItem.item;
-        const i = listItem.index;
-        const catFact =getRandomListItem(props.facts, i);
-        const contact =getRandomListItem(props.contacts, i);
+        const index = listItem.index;
+        const photo = listItem.item;
+        const catFact = getClampedListItem(props.catFacts, index);
+        const contact = getClampedListItem(props.contacts, index);
         return (
-          <FeedListItem
-            key={i}
-            catFact={catFact}
-            contact={contact}
-            photoUri={p.node.image.uri}
-          />
+          <FeedListItem catFact={catFact} contact={contact} photo={photo} />
         );
       }}
       ListFooterComponent={
@@ -75,3 +133,17 @@ const FlatListComponent = props => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    margin: 10
+  },
+  cardTitle: {
+    flex: 1,
+    flexDirection: "row"
+  },
+  cardAvatar: {
+    marginRight: 10,
+    marginBottom: 10
+  }
+});

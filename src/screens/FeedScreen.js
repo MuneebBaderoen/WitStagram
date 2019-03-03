@@ -19,6 +19,7 @@ import {
   Colors
 } from "react-native-paper";
 
+import { ScrollingListComponent } from "../components/FeedComponents";
 import { DataService } from "../services/DataService";
 
 export default class FeedScreen extends React.Component {
@@ -77,20 +78,12 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    return <View />;
+    return (
+      <ScrollingListComponent
+        photos={this.state.photos}
+        contacts={this.state.contacts}
+        catFacts={this.state.catFacts}
+      />
+    );
   }
 }
-
-const styles = StyleSheet.create({
-  card: {
-    margin: 10
-  },
-  cardTitle: {
-    flex: 1,
-    flexDirection: "row"
-  },
-  cardAvatar: {
-    marginRight: 10,
-    marginBottom: 10
-  }
-});

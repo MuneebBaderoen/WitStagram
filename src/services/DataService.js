@@ -8,7 +8,7 @@ const formatName = name => {
     .toLowerCase();
 };
 
-const getClampedListItem = (list, index) => {
+export const getClampedListItem = (list, index) => {
   const numItems = list.length;
   const clampedIndex = Math.floor(index % numItems);
   return list[clampedIndex];
@@ -51,7 +51,10 @@ export const DataService = {
         after: photosEndCursor
       });
       return {
-        photos: response.edges.map(item => item.node.image.uri),
+        photos: response.edges.map(item => ({
+          uri: item.node.image.uri,
+          liked: false
+        })),
         photosEndCursor: response.page_info.end_cursor
       };
     }
