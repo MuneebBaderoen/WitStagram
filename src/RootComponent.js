@@ -5,8 +5,8 @@ import { Appbar, BottomNavigation } from "react-native-paper";
 
 import FeedScreen from "./feed/FeedScreen";
 // const FeedScreen = () => <Text>I am a feed screen</Text>;
-// import CameraScreen from "./camera/CameraScreen";
-const CameraScreen = () => <Text>A camera screen, am I</Text>;
+import CameraScreen from "./camera/CameraScreen";
+// const CameraScreen = () => <Text>A camera screen, am I</Text>;
 
 const theme = {
   ...DefaultTheme,
@@ -21,7 +21,7 @@ const theme = {
 export class RootComponent extends React.Component {
   // -----------------NAVIGATION STATE AND COMPONENTS -------------------
   state = {
-    index: 0,
+    index: 1,
     routes: [
       { key: "feed", title: "Feed", icon: "rss-feed" },
       { key: "camera", title: "Camera", icon: "camera-alt" }

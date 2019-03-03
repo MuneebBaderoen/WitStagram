@@ -8,12 +8,6 @@ const formatName = name => {
     .toLowerCase();
 };
 
-export const getClampedListItem = (list, index) => {
-  const numItems = list.length;
-  const clampedIndex = Math.floor(index % numItems);
-  return list[clampedIndex];
-};
-
 export const DataService = {
   fetchCatFacts: numberOfFacts => {
     const offset = 50;

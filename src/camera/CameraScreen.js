@@ -6,11 +6,11 @@ import {
   ActivityIndicator,
   Animated
 } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, Snackbar, withTheme } from "react-native-paper";
 
 import { Camera, Permissions } from "expo";
 
-export default class CameraScreen extends React.Component {
+class CameraScreen extends React.Component {
   state = {
     isSavingPhoto: false,
     hasCameraPermission: null,
@@ -22,14 +22,14 @@ export default class CameraScreen extends React.Component {
     this.feedbackOpacity = new Animated.Value(0);
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     const { status: cameraStatus } = await Permissions.askAsync(
       Permissions.CAMERA
     );
     this.setState({
       hasCameraPermission: cameraStatus === "granted"
     });
-  }
+  };
 
   handleFlip = () => {
     this.setState({
@@ -42,25 +42,69 @@ export default class CameraScreen extends React.Component {
 
   handleTakePhoto = () => {
     // Create flash animation on screen for image feedback
-    this.feedbackOpacity.setValue(0);
+    const ANIMATION_TOTAL_DURATION = 100;
     const animation = Animated.sequence([
       Animated.timing(this.feedbackOpacity, {
         toValue: 1,
-        duration: 50,
+        duration: ANIMATION_TOTAL_DURATION / 2,
         useNativeDriver: true
       }),
       Animated.timing(this.feedbackOpacity, {
         toValue: 0,
-        duration: 50,
+        duration: ANIMATION_TOTAL_DURATION / 2,
         useNativeDriver: true
       })
-    ]).start();
+    ]).start(() => {
+      // Take photo only after the animation is complete
+      // Makes the UI feel snappy, even though it's all an illusion
+      this.setState({
+        snackbarVisible: true
+      });
+      this.camera
+        .takePictureAsync()
+        .then(tempPhoto => CameraRoll.saveToCameraRoll(tempPhoto.uri));
+    });
+  };
 
-    // Take photo without returning the promise
-    // Keep this function as non-blocking
-    this.camera
-      .takePictureAsync()
-      .then(tempPhoto => CameraRoll.saveToCameraRoll(tempPhoto.uri));
+  renderFlipButton = () => {
+    return (
+      <IconButton
+        style={styles.flipButton}
+        icon="flip"
+        color={"#fff"}
+        size={50}
+        onPress={this.handleFlip}
+      />
+    );
+  };
+
+  renderCameraButton = () => {
+    return (
+      <IconButton
+        style={styles.photoButton}
+        icon="camera"
+        color={"#fff"}
+        size={50}
+        onPress={this.handleTakePhoto}
+      />
+    );
+  };
+
+  renderFeedback = () => {
+    const { colors } = this.props.theme;
+    return (
+      <Snackbar
+        style={{
+          backgroundColor: colors.primary,
+          borderRadius: 15
+        }}
+        duration={3000}
+        visible={this.state.snackbarVisible}
+        onDismiss={() => this.setState({ snackbarVisible: false })}
+      >
+        Nice photo! Refresh your feed to see it :)
+      </Snackbar>
+    );
   };
 
   render() {
@@ -80,33 +124,22 @@ export default class CameraScreen extends React.Component {
           <View style={styles.cameraView}>
             <Animated.View
               style={{
-                ...styles.activity,
+                ...styles.flashFeedback,
                 opacity: feedbackOpacity
               }}
             />
-            <IconButton
-              style={styles.flipButton}
-              icon="flip"
-              color={"#fff"}
-              size={50}
-              onPress={this.handleFlip}
-            />
-            <IconButton
-              style={styles.photoButton}
-              icon="camera"
-              color={"#fff"}
-              size={50}
-              onPress={this.handleTakePhoto}
-            />
+            {this.renderFlipButton()}
+            {this.renderCameraButton()}
           </View>
         </Camera>
+        {this.renderFeedback()}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  activity: {
+  flashFeedback: {
     backgroundColor: "#fff",
     opacity: 0,
     height: "100%",
@@ -126,11 +159,15 @@ const styles = StyleSheet.create({
   photoButton: {
     alignSelf: "flex-end",
     height: 100,
-    width: 100
+    width: 100,
+    marginBottom: 35
   },
   flipButton: {
     alignSelf: "flex-end",
     height: 100,
-    width: 100
+    width: 100,
+    marginBottom: 35
   }
 });
+
+export default withTheme(CameraScreen);

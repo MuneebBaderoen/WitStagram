@@ -35,7 +35,7 @@ export default class FeedScreen extends React.Component {
     this.setState({
       photos: this.state.photos.map((item, i) => {
         if (i === index) {
-          item.active = !item.active;
+          item.liked = !item.liked;
         }
         return item;
       })
@@ -44,15 +44,24 @@ export default class FeedScreen extends React.Component {
 
   handleDoubleTap = index => {
     const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300;
-    if (this.lastTap && now - this.lastTap < DOUBLE_PRESS_DELAY) {
-      this.toggleLike(index);
-    } else {
-      this.lastTap = now;
+    const DOUBLE_PRESS_THRESHOLD = 300;
+
+    if (this.lastTap) {
+      // This is not the first tap
+      const isWithinThreshold = now - this.lastTap < DOUBLE_PRESS_THRESHOLD;
+      const isSameIndex = this.lastTapIndex === index;
+
+      if (isWithinThreshold && isSameIndex) {
+        // This is a valid double tap
+        return this.toggleLike(index);
+      }
     }
+
+    this.lastTap = now;
+    this.lastTapIndex = index;
   };
 
-  onRefreshTop = async () => {
+  handleRefreshTop = async () => {
     if (!this.state.isListRefreshingTop) {
       this.setState({
         isListRefreshingTop: true
@@ -68,7 +77,7 @@ export default class FeedScreen extends React.Component {
     }
   };
 
-  onRefreshBottom = async () => {
+  handleRefreshBottom = async () => {
     if (!this.state.isListRefreshingBottom) {
       this.setState({
         isListRefreshingBottom: true
@@ -85,18 +94,14 @@ export default class FeedScreen extends React.Component {
     }
   };
 
-  render() {
-    // return this.renderSimpleList();
-    // return this.renderScrollingList();
-    return this.renderFlatList();
-  }
-
   renderSimpleList() {
     return (
       <SimpleListComponent
         photos={this.state.photos}
         contacts={this.state.contacts}
         catFacts={this.state.catFacts}
+        onDoubleTap={this.handleDoubleTap}
+        onLike={this.toggleLike}
       />
     );
   }
@@ -107,6 +112,8 @@ export default class FeedScreen extends React.Component {
         photos={this.state.photos}
         contacts={this.state.contacts}
         catFacts={this.state.catFacts}
+        onDoubleTap={this.handleDoubleTap}
+        onLike={this.toggleLike}
       />
     );
   }
@@ -119,10 +126,17 @@ export default class FeedScreen extends React.Component {
         catFacts={this.state.catFacts}
         isListRefreshingTop={this.state.isListRefreshingTop}
         isListRefreshingBottom={this.state.isListRefreshingBottom}
-        onRefreshTop={this.onRefreshTop}
-        onRefreshBottom={this.onRefreshBottom}
-        onLike={this.onLike}
+        onRefreshTop={this.handleRefreshTop}
+        onRefreshBottom={this.handleRefreshBottom}
+        onDoubleTap={this.handleDoubleTap}
+        onLike={this.toggleLike}
       />
     );
   };
+
+  render() {
+    // return this.renderSimpleList();
+    // return this.renderScrollingList();
+    return this.renderFlatList();
+  }
 }

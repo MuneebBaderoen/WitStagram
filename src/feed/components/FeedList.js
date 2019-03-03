@@ -6,19 +6,20 @@ import {
   FlatList,
   ActivityIndicator
 } from "react-native";
-import { getClampedListItem } from "../../services/DataService";
+import { getClampedListItem } from "../../utilities";
 import { FeedListItem } from "./FeedListItem";
 
 export const SimpleListComponent = props => {
   return (
     <View>
-      {props.photos.map((item, index) => {
-        const photo = getClampedListItem(props.photos, index);
+      {props.photos.map((photo, index) => {
         const catFact = getClampedListItem(props.catFacts, index);
         const contact = getClampedListItem(props.contacts, index);
         return (
           <FeedListItem
             key={photo.uri}
+            onCardPress={props.onDoubleTap.bind(this, index)}
+            onLike={props.onLike.bind(this, index)}
             contact={contact}
             catFact={catFact}
             photo={photo}
@@ -32,13 +33,14 @@ export const SimpleListComponent = props => {
 export const ScrollingListComponent = props => {
   return (
     <ScrollView>
-      {props.photos.map((item, index) => {
-        const photo = getClampedListItem(props.photos, index);
+      {props.photos.map((photo, index) => {
         const catFact = getClampedListItem(props.catFacts, index);
         const contact = getClampedListItem(props.contacts, index);
         return (
           <FeedListItem
             key={photo.uri}
+            onCardPress={props.onDoubleTap.bind(this, index)}
+            onLike={props.onLike.bind(this, index)}
             catFact={catFact}
             contact={contact}
             photo={photo}
@@ -64,7 +66,13 @@ export const FlatListComponent = props => {
         const catFact = getClampedListItem(props.catFacts, index);
         const contact = getClampedListItem(props.contacts, index);
         return (
-          <FeedListItem catFact={catFact} contact={contact} photo={photo} />
+          <FeedListItem
+            onCardPress={props.onDoubleTap.bind(this, index)}
+            onLike={props.onLike.bind(this, index)}
+            catFact={catFact}
+            contact={contact}
+            photo={photo}
+          />
         );
       }}
       ListFooterComponent={
