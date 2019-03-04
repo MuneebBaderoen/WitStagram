@@ -32,6 +32,8 @@ class CameraScreen extends React.Component {
   };
 
   handleFlip = () => {
+    console.log("flip camera front/back");
+    return;
     this.setState({
       type:
         this.state.type === Camera.Constants.Type.back
@@ -41,6 +43,8 @@ class CameraScreen extends React.Component {
   };
 
   handleTakePhoto = () => {
+    console.log("taking photo");
+    return;
     // Create flash animation on screen for image feedback
     const ANIMATION_TOTAL_DURATION = 100;
     const animation = Animated.sequence([
@@ -57,19 +61,24 @@ class CameraScreen extends React.Component {
     ]).start(() => {
       // Take photo only after the animation is complete
       // Makes the UI feel snappy, even though it's all an illusion
+      const photoPromise = this.camera.takePictureAsync();
+      // Show snackbar only after we've got the temp file
+      // with the photo contents
       this.setState({
         snackbarVisible: true
       });
-      this.camera
-        .takePictureAsync()
-        .then(tempPhoto => CameraRoll.saveToCameraRoll(tempPhoto.uri));
+      // Copy photo out of app sandbox after feedback is provided
+      photoPromise.then(tempPhoto =>
+        CameraRoll.saveToCameraRoll(tempPhoto.uri)
+      );
     });
   };
 
   renderFlipButton = () => {
+    // return null;
     return (
       <IconButton
-        style={styles.flipButton}
+        style={styles.floatingButton}
         icon="flip"
         color={"#fff"}
         size={50}
@@ -79,9 +88,10 @@ class CameraScreen extends React.Component {
   };
 
   renderCameraButton = () => {
+    // return null;
     return (
       <IconButton
-        style={styles.photoButton}
+        style={styles.floatingButton}
         icon="camera"
         color={"#fff"}
         size={50}
@@ -90,7 +100,8 @@ class CameraScreen extends React.Component {
     );
   };
 
-  renderFeedback = () => {
+  renderFeedbackSnackbar = () => {
+    // return null;
     const { colors } = this.props.theme;
     return (
       <Snackbar
@@ -117,9 +128,9 @@ class CameraScreen extends React.Component {
         <Camera
           style={styles.flexContainer}
           type={this.state.type}
-          ref={ref => {
-            this.camera = ref;
-          }}
+          // ref={ref => {
+          //   this.camera = ref;
+          // }}
         >
           <View style={styles.cameraView}>
             <Animated.View
@@ -132,13 +143,16 @@ class CameraScreen extends React.Component {
             {this.renderCameraButton()}
           </View>
         </Camera>
-        {this.renderFeedback()}
+        {this.renderFeedbackSnackbar()}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  flexContainer: {
+    flex: 1
+  },
   flashFeedback: {
     backgroundColor: "#fff",
     opacity: 0,
@@ -147,26 +161,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     padding: "50%"
   },
-  flexContainer: {
-    flex: 1
-  },
   cameraView: {
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "center"
   },
-  photoButton: {
+  floatingButton: {
     alignSelf: "flex-end",
     height: 100,
-    width: 100,
-    marginBottom: 35
-  },
-  flipButton: {
-    alignSelf: "flex-end",
-    height: 100,
-    width: 100,
-    marginBottom: 35
+    width: 100
+    // ---------------------------------
+    // Add this margin back to prevent the snackbar
+    // from covering the buttons
+
+    // marginBottom: 35
+
+    // ---------------------------------
   }
 });
 
