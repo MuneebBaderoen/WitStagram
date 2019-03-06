@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { ScrollView, View, Text } from "react-native";
 import {
   SimpleListComponent,
   ScrollingListComponent,
@@ -11,10 +11,10 @@ export default class FeedScreen extends React.Component {
   state = {
     isListRefreshingTop: false,
     isListRefreshingBottom: true,
-    numItems: 3,
+    numItems: 5,
     photos: [],
     contacts: [],
-    facts: []
+    catFacts: []
   };
 
   componentDidMount = async () => {
@@ -137,10 +137,20 @@ export default class FeedScreen extends React.Component {
     );
   };
 
+  renderDebugState = () => {
+    return null;
+    return JSON.stringify(this.state, null, 2);
+  };
+
   render() {
     console.log(this.state);
-    // return <Text>New and improved feed screen</Text>;
-    return this.renderSimpleList();
+    return (
+      <ScrollView>
+        <Text>New and improved feed screen</Text>
+        <Text>{this.renderDebugState()}</Text>
+      </ScrollView>
+    );
+    // return this.renderSimpleList();
     // return this.renderScrollingList();
     // return this.renderFlatList();
   }
