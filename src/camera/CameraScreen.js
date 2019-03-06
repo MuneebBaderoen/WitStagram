@@ -22,14 +22,14 @@ class CameraScreen extends React.Component {
     this.feedbackOpacity = new Animated.Value(0);
   }
 
-  componentDidMount = async () => {
-    const { status: cameraStatus } = await Permissions.askAsync(
-      Permissions.CAMERA
-    );
-    this.setState({
-      hasCameraPermission: cameraStatus === "granted"
-    });
-  };
+  // componentDidMount = async () => {
+  //   const { status: cameraStatus } = await Permissions.askAsync(
+  //     Permissions.CAMERA
+  //   );
+  //   this.setState({
+  //     hasCameraPermission: cameraStatus === "granted"
+  //   });
+  // };
 
   handleFlip = () => {
     console.log("flip camera front/back");
@@ -44,7 +44,7 @@ class CameraScreen extends React.Component {
 
   handleTakePhoto = () => {
     console.log("Taking a photo");
-    // return;
+    return;
     // Create flash animation on screen for image feedback
     const ANIMATION_TOTAL_DURATION = 100;
     const animation = Animated.sequence([
@@ -75,7 +75,7 @@ class CameraScreen extends React.Component {
   };
 
   renderFlipButton = () => {
-    // return null;
+    return null;
     return (
       <IconButton
         style={styles.floatingButton}
@@ -88,7 +88,7 @@ class CameraScreen extends React.Component {
   };
 
   renderCameraButton = () => {
-    // return null;
+    return null;
     return (
       <IconButton
         style={styles.floatingButton}
@@ -101,7 +101,7 @@ class CameraScreen extends React.Component {
   };
 
   renderFeedbackSnackbar = () => {
-    // return null;
+    return null;
     const { colors } = this.props.theme;
     return (
       <Snackbar
@@ -171,12 +171,12 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     height: 100,
     // ------------- EDIT BEGIN ------------------
-    width: 100,
+    width: 100
 
     // Add this margin back to prevent the snackbar
     // from covering the buttons
 
-    marginBottom: 35
+    // marginBottom: 35
 
     // ------------- EDIT END ------------------
   }
