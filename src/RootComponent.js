@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, StatusBar } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Appbar, BottomNavigation } from "react-native-paper";
 
-// import FeedScreen from "./feed/FeedScreen";
-const FeedScreen = () => <Text>I am a feed screen</Text>;
+import FeedScreen from "./feed/FeedScreen";
+// const FeedScreen = () => <Text>I am a feed screen</Text>;
 import CameraScreen from "./camera/CameraScreen";
 // const CameraScreen = () => <Text>A camera screen, am I</Text>;
 

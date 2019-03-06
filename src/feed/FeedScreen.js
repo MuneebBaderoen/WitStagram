@@ -1,4 +1,5 @@
 import React from "react";
+import { Text } from "react-native";
 import {
   SimpleListComponent,
   ScrollingListComponent,
@@ -17,8 +18,10 @@ export default class FeedScreen extends React.Component {
   };
 
   componentDidMount = async () => {
-    const catFacts = await DataService.fetchCatFacts(this.state.numItems);
     const contacts = await DataService.getContacts(this.state.numItems);
+    console.log("contacts:", contacts);
+    const catFacts = await DataService.fetchCatFacts(this.state.numItems);
+    console.log("catFacts:", catFacts);
     const { photos, photosEndCursor } = await DataService.getPhotos(
       this.state.numItems
     );
@@ -135,8 +138,10 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    // return this.renderSimpleList();
+    console.log(this.state);
+    // return <Text>New and improved feed screen</Text>;
+    return this.renderSimpleList();
     // return this.renderScrollingList();
-    return this.renderFlatList();
+    // return this.renderFlatList();
   }
 }

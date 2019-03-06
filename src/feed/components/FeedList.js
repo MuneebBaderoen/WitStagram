@@ -7,6 +7,8 @@ import {
   ActivityIndicator
 } from "react-native";
 import { getClampedListItem } from "../../utilities";
+
+// import { FeedListItem } from "./BasicFeedListItem";
 import { FeedListItem } from "./FeedListItem";
 
 export const SimpleListComponent = props => {

@@ -11,13 +11,24 @@ const formatName = name => {
 export const DataService = {
   fetchCatFacts: numberOfFacts => {
     const offset = 50;
-    return fetch(`https://cat-fact.herokuapp.com/facts`)
-      .then(response => response.json())
-      .then(response =>
-        response.all
-          .slice(offset, offset + numberOfFacts)
-          .map(item => item.text)
-      );
+    return Promise.resolve([
+      "fact 1",
+      "fact 2",
+      "fact 3",
+      "fact 4",
+      "fact 5",
+      "fact 6",
+      "fact 7",
+      "fact 8",
+      "fact 9"
+    ]);
+    // return fetch(`https://cat-fact.herokuapp.com/facts`)
+    //   .then(response => response.json())
+    //   .then(response =>
+    //     response.all
+    //       .slice(offset, offset + numberOfFacts)
+    //       .map(item => item.text)
+    //   );
   },
   getContacts: async () => {
     const { status: contactsStatus } = await Permissions.askAsync(
