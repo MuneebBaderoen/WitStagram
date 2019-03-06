@@ -101,6 +101,7 @@ export class FeedListItem extends React.Component {
   }
 }
 
+// ------------- EDIT BEGIN ------------------
 const styles = StyleSheet.create({
   card: {
     // margin: 10
@@ -113,3 +114,4 @@ const styles = StyleSheet.create({
     // marginBottom: 10
   }
 });
+// ------------- EDIT END ------------------

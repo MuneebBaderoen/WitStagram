@@ -22,14 +22,14 @@ class CameraScreen extends React.Component {
     this.feedbackOpacity = new Animated.Value(0);
   }
 
-  // componentDidMount = async () => {
-  //   const { status: cameraStatus } = await Permissions.askAsync(
-  //     Permissions.CAMERA
-  //   );
-  //   this.setState({
-  //     hasCameraPermission: cameraStatus === "granted"
-  //   });
-  // };
+  componentDidMount = async () => {
+    const { status: cameraStatus } = await Permissions.askAsync(
+      Permissions.CAMERA
+    );
+    this.setState({
+      hasCameraPermission: cameraStatus === "granted"
+    });
+  };
 
   handleFlip = () => {
     console.log("flip camera front/back");
@@ -62,7 +62,7 @@ class CameraScreen extends React.Component {
       // Take photo only after the animation is complete
       // Makes the UI feel snappy, even though it's all an illusion
       const photoPromise = this.camera.takePictureAsync();
-      // Show snackbar only after we've got the temp file
+      // Show snackbar only after we've got the temporary file
       // with the photo contents
       this.setState({
         snackbarVisible: true
@@ -168,16 +168,13 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   floatingButton: {
-    alignSelf: "flex-end",
-    height: 100,
     // ------------- EDIT BEGIN ------------------
-    width: 100
-
+    // alignSelf: "flex-end",
+    // height: 100,
+    // width: 100,
     // Add this margin back to prevent the snackbar
     // from covering the buttons
-
     // marginBottom: 35
-
     // ------------- EDIT END ------------------
   }
 });
