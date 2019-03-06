@@ -8,8 +8,12 @@ import {
 } from "react-native";
 import { getClampedListItem } from "../../utilities";
 
+// ------------- EDIT BEGIN ------------------
+
 import { FeedListItem } from "./BasicFeedListItem";
 // import { FeedListItem } from "./FeedListItem";
+
+// ------------- EDIT END ------------------
 
 export const SimpleListComponent = props => {
   return (
@@ -58,9 +62,15 @@ export const FlatListComponent = props => {
     <FlatList
       refreshing={props.isListRefreshingTop}
       data={props.photos}
+      // ------------- EDIT BEGIN ------------------
+
       // onRefresh={props.onRefreshTop}
+      // ------------- EDIT END ------------------
       keyExtractor={(item, index) => item.uri + index}
+      // ------------- EDIT BEGIN ------------------
+
       // onEndReached={props.onRefreshBottom}
+      // ------------- EDIT END ------------------
       onEndReachedThreshold={0.5}
       renderItem={listItem => {
         const index = listItem.index;
@@ -78,7 +88,10 @@ export const FlatListComponent = props => {
         );
       }}
       ListFooterComponent={
+        // ------------- EDIT BEGIN ------------------
+
         false &&
+        // ------------- EDIT END ------------------
         props.isListRefreshingBottom && (
           <View style={{ flex: 1, padding: 10 }}>
             <ActivityIndicator size="large" />

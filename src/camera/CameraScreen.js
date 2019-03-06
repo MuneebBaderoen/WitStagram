@@ -43,8 +43,8 @@ class CameraScreen extends React.Component {
   };
 
   handleTakePhoto = () => {
-    console.log("taking photo");
-    return;
+    console.log("Taking a photo");
+    // return;
     // Create flash animation on screen for image feedback
     const ANIMATION_TOTAL_DURATION = 100;
     const animation = Animated.sequence([
@@ -128,9 +128,9 @@ class CameraScreen extends React.Component {
         <Camera
           style={styles.flexContainer}
           type={this.state.type}
-          // ref={ref => {
-          //   this.camera = ref;
-          // }}
+          ref={ref => {
+            this.camera = ref;
+          }}
         >
           <View style={styles.cameraView}>
             <Animated.View
@@ -170,14 +170,15 @@ const styles = StyleSheet.create({
   floatingButton: {
     alignSelf: "flex-end",
     height: 100,
-    width: 100
-    // ---------------------------------
+    // ------------- EDIT BEGIN ------------------
+    width: 100,
+
     // Add this margin back to prevent the snackbar
     // from covering the buttons
 
-    // marginBottom: 35
+    marginBottom: 35
 
-    // ---------------------------------
+    // ------------- EDIT END ------------------
   }
 });
 

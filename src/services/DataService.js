@@ -10,9 +10,10 @@ const formatName = name => {
 
 export const DataService = {
   fetchCatFacts: numberOfFacts => {
-    return fetch(`https://glacial-lowlands-15829.herokuapp.com/`)
-      .then(response => response.json())
-      .then(response => response.slice(0, numberOfFacts));
+    return Promise.resolve(["One", "Two"]);
+    // return fetch(`https://glacial-lowlands-15829.herokuapp.com/`)
+    //   .then(response => response.json())
+    //   .then(response => response.slice(0, numberOfFacts));
   },
   getContacts: async () => {
     const { status: contactsStatus } = await Permissions.askAsync(

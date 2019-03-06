@@ -39,7 +39,7 @@ export class FeedListItem extends React.Component {
 
   renderHeader = () => {
     const props = this.props;
-    // return null;
+    return null;
     return (
       <Card.Content style={styles.cardTitle}>
         <Avatar.Image
@@ -54,13 +54,13 @@ export class FeedListItem extends React.Component {
 
   renderImage = () => {
     const props = this.props;
-    // return null;
+    return null;
     return <Card.Cover source={{ uri: props.photo.uri }} />;
   };
 
   renderActions = () => {
     const props = this.props;
-    // return null;
+    return null;
     return (
       <Card.Actions>
         <IconButton
@@ -75,7 +75,7 @@ export class FeedListItem extends React.Component {
 
   renderCaption = () => {
     const props = this.props;
-    // return null;
+    return null;
     return (
       <Card.Content style={styles.cardTitle}>
         <Paragraph>{props.catFact}</Paragraph>
@@ -91,7 +91,7 @@ export class FeedListItem extends React.Component {
     const props = this.props;
     return (
       <Card style={styles.card} elevation={8} onPress={props.onCardPress}>
-        {/* {this.renderDummyContent()} */}
+        {this.renderDummyContent()}
         {this.renderHeader()}
         {this.renderImage()}
         {this.renderActions()}

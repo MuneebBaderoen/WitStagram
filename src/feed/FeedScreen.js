@@ -19,9 +19,7 @@ export default class FeedScreen extends React.Component {
 
   componentDidMount = async () => {
     const contacts = await DataService.getContacts(this.state.numItems);
-    console.log("contacts:", contacts);
     const catFacts = await DataService.fetchCatFacts(this.state.numItems);
-    console.log("catFacts:", catFacts);
     const { photos, photosEndCursor } = await DataService.getPhotos(
       this.state.numItems
     );
@@ -139,17 +137,16 @@ export default class FeedScreen extends React.Component {
 
   renderDebugState = () => {
     return null;
-    return JSON.stringify(this.state, null, 2);
-  };
-
-  render() {
-    console.log(this.state);
     return (
       <ScrollView>
         <Text>New and improved feed screen</Text>
-        <Text>{this.renderDebugState()}</Text>
+        <Text>{JSON.stringify(this.state, null, 2)}</Text>
       </ScrollView>
     );
+  };
+
+  render() {
+    return this.renderDebugState();
     // return this.renderSimpleList();
     // return this.renderScrollingList();
     // return this.renderFlatList();

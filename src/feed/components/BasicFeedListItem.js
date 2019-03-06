@@ -12,6 +12,7 @@ export const FeedListItem = props => {
   );
 };
 
+// ------------- EDIT BEGIN ------------------
 const styles = StyleSheet.create({
   listItemContainer: {
     // borderWidth: 2,
@@ -24,3 +25,4 @@ const styles = StyleSheet.create({
     // width: 100
   }
 });
+// ------------- EDIT END ------------------

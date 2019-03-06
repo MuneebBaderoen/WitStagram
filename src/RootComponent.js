@@ -21,7 +21,11 @@ const theme = {
 export class RootComponent extends React.Component {
   // -----------------NAVIGATION STATE AND COMPONENTS -------------------
   state = {
+    // ------------- EDIT BEGIN ------------------
+
     index: 0,
+
+    // ------------- EDIT END------------------
     routes: [
       { key: "feed", title: "Feed", icon: "rss-feed" },
       { key: "camera", title: "Camera", icon: "camera-alt" }
